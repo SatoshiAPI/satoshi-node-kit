@@ -1,0 +1,34 @@
+{
+  "name": "@satoshiapi/cluster-sdk",
+  "version": "1.0.0",
+  "description": "JavaScript SDK for the SatoshiAPI Agent Network — node registration, L402, price feeds, and escrow",
+  "type": "module",
+  "main": "satoshi-cluster.js",
+  "exports": {
+    ".": "./satoshi-cluster.js"
+  },
+  "scripts": {
+    "test": "node --experimental-vm-modules test.js"
+  },
+  "keywords": [
+    "bitcoin",
+    "lightning",
+    "lnd",
+    "l402",
+    "satoshiapi",
+    "lightning-network",
+    "lightning-node"
+  ],
+  "author": "SatoshiAPI <satoshi@satoshiapi.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SatoshiAPI/satoshi-node-kit"
+  },
+  "homepage": "https://satoshiapi.io",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

@@ -1,0 +1,101 @@
+version: "3.8"
+
+# SatoshiAPI Cluster Node Kit — Docker Compose
+# Runs LND (mainnet) + Tor. Optionally includes bitcoind for a full node.
+#
+# Usage:
+#   Full node (bitcoin + lnd + tor):  docker-compose --profile full up -d
+#   Light (lnd + tor only, use Neutrino): docker-compose up -d
+#
+# Ports exposed:
+#   9735  — LND peer-to-peer (Lightning)
+#   10009 — LND gRPC (for lncli / SDK)
+#   8080  — LND REST API
+
+services:
+
+  # ─────────────────────────────────────────────
+  # Tor hidden service for LND
+  # ─────────────────────────────────────────────
+  tor:
+    image: lnzap/tor:latest
+    container_name: tor
+    restart: unless-stopped
+    volumes:
+      - tor_data:/var/lib/tor
+    environment:
+      - TOR_LOG=notice
+    networks:
+      - lnnet
+
+  # ─────────────────────────────────────────────
+  # LND — Lightning Network Daemon (mainnet)
+  # ─────────────────────────────────────────────
+  lnd:
+    image: lightninglabs/lnd:v0.18.3-beta
+    container_name: lnd
+    restart: unless-stopped
+    depends_on:
+      - tor
+    ports:
+      - "9735:9735"    # P2P Lightning
+      - "10009:10009"  # gRPC (bind to 0.0.0.0 only on trusted networks)
+      - "8080:8080"    # REST API
+    volumes:
+      - lnd_data:/root/.lnd
+      - ./lnd/lnd.conf:/root/.lnd/lnd.conf:ro
+      - tor_data:/var/lib/tor:ro
+    environment:
+      - HOME=/root
+    command: lnd --configfile=/root/.lnd/lnd.conf
+    networks:
+      - lnnet
+    healthcheck:
+      test: ["CMD", "lncli", "--network=mainnet", "getinfo"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ─────────────────────────────────────────────
+  # Bitcoin Core — optional full node backend
+  # Enable with: docker-compose --profile full up -d
+  # ─────────────────────────────────────────────
+  bitcoind:
+    image: lnzap/bitcoind:latest
+    container_name: bitcoind
+    profiles:
+      - full
+    restart: unless-stopped
+    volumes:
+      - bitcoind_data:/bitcoin/.bitcoin
+    command: >
+      bitcoind
+      -server=1
+      -txindex=1
+      -mainnet=1
+      -rpcuser=satoshi
+      -rpcpassword=changeme_use_strong_password
+      -rpcallowip=0.0.0.0/0
+      -zmqpubrawblock=tcp://0.0.0.0:28332
+      -zmqpubrawtx=tcp://0.0.0.0:28333
+      -rpcbind=0.0.0.0
+    ports:
+      - "8332:8332"   # RPC
+      - "8333:8333"   # P2P
+      - "28332:28332" # ZMQ blocks
+      - "28333:28333" # ZMQ txs
+    networks:
+      - lnnet
+
+networks:
+  lnnet:
+    driver: bridge
+
+volumes:
+  lnd_data:
+    driver: local
+  tor_data:
+    driver: local
+  bitcoind_data:
+    driver: local

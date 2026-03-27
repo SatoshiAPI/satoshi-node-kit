@@ -1,0 +1,59 @@
+{
+  "_comment": "SatoshiAPI Cluster Hub Peers — used by peer-connect.sh and the SDK",
+  "_version": "1.0.0",
+  "_updated": "2026-03-27",
+
+  "cluster": {
+    "name": "SatoshiAPI Agent Network",
+    "api": "https://api.satoshiapi.io",
+    "mcp": "https://api.satoshiapi.io/mcp",
+    "register_endpoint": "https://api.satoshiapi.io/cluster/register"
+  },
+
+  "hubs": [
+    {
+      "name": "SatoshiAPI Primary Hub",
+      "pubkey": "03176f9948d333f9cc1d7d409353f995816e44b3c90a3300b5a08ceba811faf989",
+      "clearnet": "74.244.146.41:9735",
+      "onion": "34ok5fboyoxymwrb3mpynhhfgqkna3addrzmdkdzhibrkkdjokrrmpyd.onion:9735",
+      "min_channel_size_sats": 100000,
+      "preferred": true,
+      "notes": "Primary hub — always connect here first"
+    }
+  ],
+
+  "tiers": {
+    "seed": {
+      "min_sats": 500000,
+      "max_sats": 999999,
+      "inbound_bonus_pct": 10,
+      "min_channels": 2,
+      "uptime_requirement_pct": 95,
+      "vesting_days": 30
+    },
+    "builder": {
+      "min_sats": 1000000,
+      "max_sats": 4999999,
+      "inbound_bonus_pct": 15,
+      "min_channels": 3,
+      "uptime_requirement_pct": 95,
+      "vesting_days": 30
+    },
+    "anchor": {
+      "min_sats": 5000000,
+      "max_sats": 9999999,
+      "inbound_bonus_pct": 20,
+      "min_channels": 5,
+      "uptime_requirement_pct": 95,
+      "vesting_days": 30
+    },
+    "founding": {
+      "min_sats": 10000000,
+      "max_sats": null,
+      "inbound_bonus_pct": 25,
+      "min_channels": 6,
+      "uptime_requirement_pct": 95,
+      "vesting_days": 30
+    }
+  }
+}
