@@ -151,6 +151,27 @@ if ! $DRY_RUN; then
     warn "Not connected to hub. Running peer-connect.sh first..."
     bash "$(dirname "${BASH_SOURCE[0]}")/peer-connect.sh"
   fi
+
+  # ── H-4: Wallet balance check before opening channels ────────────────────
+  # Verify confirmed on-chain balance is sufficient for all channels + fees.
+  # Estimated fee buffer: ~10,000 sats per channel open (conservative).
+  FEE_BUFFER_PER_CHAN=10000
+  TOTAL_FEE_BUFFER=$(( NUM_CHANNELS * FEE_BUFFER_PER_CHAN ))
+  REQUIRED_BALANCE=$(( TOTAL_SATS + TOTAL_FEE_BUFFER ))
+
+  info "Checking wallet balance (need ${REQUIRED_BALANCE} sats: ${TOTAL_SATS} + ${TOTAL_FEE_BUFFER} fee buffer)..."
+  WALLET_JSON=$(docker exec "$LND_CONTAINER" lncli --network=mainnet walletbalance 2>/dev/null) || \
+    die "Failed to query wallet balance. Is LND unlocked?"
+
+  CONFIRMED_BALANCE=$(echo "$WALLET_JSON" | grep -o '"confirmed_balance": *"[0-9]*"' | grep -o '[0-9]*' | head -1)
+  if [[ -z "$CONFIRMED_BALANCE" ]]; then
+    die "Could not parse wallet balance from lncli output."
+  fi
+
+  if (( CONFIRMED_BALANCE < REQUIRED_BALANCE )); then
+    die "Insufficient confirmed balance. Have: ${CONFIRMED_BALANCE} sats. Need: ${REQUIRED_BALANCE} sats (${TOTAL_SATS} channels + ${TOTAL_FEE_BUFFER} fee buffer). Deposit more on-chain funds and try again."
+  fi
+  success "Wallet balance OK: ${CONFIRMED_BALANCE} confirmed sats (need ${REQUIRED_BALANCE})"
 fi
 
 # ── Open channels ─────────────────────────────────────────────────────────────
@@ -166,19 +187,24 @@ for i in $(seq 1 "$NUM_CHANNELS"); do
     continue
   fi
 
-  CMD="docker exec $LND_CONTAINER lncli --network=mainnet openchannel \
-    --node_key=$HUB_PUBKEY \
-    --local_amt=$PER_CHANNEL_SATS"
-
+  # H-2 fix: Use array-based execution instead of eval.
+  # eval with dynamic strings is dangerous — shell metacharacters in any variable
+  # could allow arbitrary command execution. Arrays are safe and explicit.
+  cmd_args=(
+    docker exec "$LND_CONTAINER"
+    lncli --network=mainnet openchannel
+    --node_key="$HUB_PUBKEY"
+    --local_amt="$PER_CHANNEL_SATS"
+  )
   if [[ $PUSH_SATS -gt 0 ]]; then
-    CMD="$CMD --push_amt=$PUSH_SATS"
+    cmd_args+=(--push_amt="$PUSH_SATS")
   fi
 
-  if eval "$CMD" 2>/dev/null; then
+  if chan_output=$("${cmd_args[@]}" 2>&1); then
     success "Channel $i opened successfully"
     (( OPENED++ ))
   else
-    warn "Channel $i failed to open"
+    warn "Channel $i failed to open: $chan_output"
     (( FAILED++ ))
   fi
 

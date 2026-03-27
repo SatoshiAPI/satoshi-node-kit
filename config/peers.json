@@ -26,7 +26,7 @@
       "inbound_bonus_pct": 10,
       "min_channels": 2,
       "uptime_requirement_pct": 95,
-      "vesting_days": 30
+      "vesting_days": 90
     },
     "builder": {
       "min_sats": 1000000,
@@ -34,7 +34,7 @@
       "inbound_bonus_pct": 15,
       "min_channels": 3,
       "uptime_requirement_pct": 95,
-      "vesting_days": 30
+      "vesting_days": 90
     },
     "anchor": {
       "min_sats": 5000000,
@@ -42,7 +42,7 @@
       "inbound_bonus_pct": 20,
       "min_channels": 5,
       "uptime_requirement_pct": 95,
-      "vesting_days": 30
+      "vesting_days": 90
     },
     "founding": {
       "min_sats": 10000000,
@@ -50,7 +50,7 @@
       "inbound_bonus_pct": 25,
       "min_channels": 6,
       "uptime_requirement_pct": 95,
-      "vesting_days": 30
+      "vesting_days": 90
     }
   }
 }

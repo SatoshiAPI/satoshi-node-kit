@@ -26,14 +26,14 @@ If nodes could take our inbound liquidity and immediately go offline or close ch
 
 ---
 
-## The 30-Day Vesting Period
+## The 90-Day Vesting Period
 
 Think of the first 90 days as a **vesting window**.
 
 ```
 Day 0:    You open channels → We open inbound channels
-Day 1–30: Vesting window — both sides must stay open and online
-Day 30:   Fully vested — your inbound channels are yours to keep
+Day 1–90: Vesting window — both sides must stay open and online
+Day 90:   Fully vested — your inbound channels are yours to keep
 After:    Normal Lightning Network rules apply
 ```
 
@@ -103,7 +103,7 @@ Force-close broadcast
 | Hardware upgrade (planned, < 2 days) | No action (contact us first) |
 | ISP outage (documented) | Case-by-case |
 | Natural disaster / emergency | Reach out — we're human |
-| Channels open for 30+ days | No clawback — fully vested |
+| Channels open for 90+ days | No clawback — fully vested |
 | You close channels after 90 days | No clawback |
 
 ---
@@ -148,7 +148,7 @@ If you know you'll have an outage, please reach out proactively. We'd rather wor
 |------|-----------|-------------|
 | Uptime | < 95% over 90 days | Force-close inbound channels |
 | Channel close (within 90d) | Required channels closed | Partial/full inbound clawback |
-| After vesting (30+ days) | N/A | No clawback — keep your liquidity |
+| After vesting (90+ days) | N/A | No clawback — keep your liquidity |
 | Your committed sats | — | Never at risk — always yours |
 | CLTV timelock (if force-closed) | ~144 blocks | ~24 hour delay, then auto-swept |
 
