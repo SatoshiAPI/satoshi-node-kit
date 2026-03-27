@@ -26,7 +26,7 @@ The SatoshiAPI Cluster Node Kit bootstraps your LND node and connects it to the 
 - ✅ A machine to run LND (Linux/macOS/VPS)
 - ✅ Docker + Docker Compose
 - ✅ Sats to fund channels (500k minimum)
-- ✅ Reliable uptime (95%+ over 30 days)
+- ✅ Reliable uptime (95%+ over 90 days)
 
 ### What We Provide
 - ✅ Inbound liquidity bonus (10%–25% of your commitment)
@@ -40,14 +40,14 @@ The SatoshiAPI Cluster Node Kit bootstraps your LND node and connects it to the 
 
 | Tier | Sats Committed | Inbound Bonus | Min Channels | Uptime Req |
 |------|---------------|---------------|--------------|------------|
-| 🌱 **Seed** | 500k – 999k | +10% inbound | 2 channels | 95% / 30d |
-| 🏗️ **Builder** | 1M – 4.99M | +15% inbound | 3 channels | 95% / 30d |
-| ⚓ **Anchor** | 5M – 9.99M | +20% inbound | 5 channels | 95% / 30d |
-| 🏛️ **Founding** | 10M+ | +25% inbound | 6 channels | 95% / 30d |
+| 🌱 **Seed** | 500k – 999k | +10% inbound | 2 channels | 95% / 90d |
+| 🏗️ **Builder** | 1M – 4.99M | +15% inbound | 3 channels | 95% / 90d |
+| ⚓ **Anchor** | 5M – 9.99M | +20% inbound | 5 channels | 95% / 90d |
+| 🏛️ **Founding** | 10M+ | +25% inbound | 6 channels | 95% / 90d |
 
 **Example:** Commit 1M sats as Builder → receive 150k sats of inbound liquidity from us.
 
-> ⚠️ **Clawback Policy:** Inbound channels may be force-closed if uptime drops below 95% or required channels close within the first 30 days. See [docs/clawback-policy.md](docs/clawback-policy.md).
+> ⚠️ **Clawback Policy:** Inbound channels may be force-closed if uptime drops below 95% or required channels close within the first 90 days. See [docs/clawback-policy.md](docs/clawback-policy.md).
 
 ---
 
@@ -84,7 +84,7 @@ satoshi-node-kit/
 └── docs/
     ├── quickstart.md       ← Step-by-step guide for non-experts
     ├── bonus-tiers.md      ← Full tier details with examples
-    └── clawback-policy.md  ← 30-day vesting / clawback explained
+    └── clawback-policy.md  ← 90-day vesting / clawback explained
 ```
 
 ---

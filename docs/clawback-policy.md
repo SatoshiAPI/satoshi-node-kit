@@ -9,8 +9,8 @@
 We open inbound channels to your node as a bonus for committing sats to our cluster.
 
 **To keep those channels, you must:**
-1. Stay online 95%+ of the time over the first 30 days
-2. Keep your channels to our hub open for the full 30 days
+1. Stay online 95%+ of the time over the first 90 days
+2. Keep your channels to our hub open for the full 90 days
 
 If you don't meet these requirements, we may close our inbound channels and reclaim that liquidity. Your original sats are always safe — only our inbound liquidity is at risk.
 
@@ -28,7 +28,7 @@ If nodes could take our inbound liquidity and immediately go offline or close ch
 
 ## The 30-Day Vesting Period
 
-Think of the first 30 days as a **vesting window**.
+Think of the first 90 days as a **vesting window**.
 
 ```
 Day 0:    You open channels → We open inbound channels
@@ -37,7 +37,7 @@ Day 30:   Fully vested — your inbound channels are yours to keep
 After:    Normal Lightning Network rules apply
 ```
 
-After 30 days, the channels behave like any normal Lightning channel. You can close them whenever you want (with standard Lightning notice). We won't force-close just because the window ended.
+After 90 days, the channels behave like any normal Lightning channel. You can close them whenever you want (with standard Lightning notice). We won't force-close just because the window ended.
 
 ---
 
@@ -47,9 +47,9 @@ We will **force-close our inbound channels** (the ones we opened to you) if:
 
 ### 1. Uptime Drops Below 95%
 
-Over any rolling 30-day window, your node must be reachable and online at least 95% of the time.
+Over any rolling 90-day window, your node must be reachable and online at least 95% of the time.
 
-- **95% = ~43.8 hours** of downtime allowed per 30 days
+- **95% = ~131.4 hours** of downtime allowed per 90 days
 - Short maintenance windows are fine
 - Multi-day outages will trigger review
 
@@ -59,7 +59,7 @@ How we measure:
 
 ### 2. You Close Our Required Channels
 
-If you close channels that were required for your tier during the first 30 days, we reserve the right to close our inbound channels in response.
+If you close channels that were required for your tier during the first 90 days, we reserve the right to close our inbound channels in response.
 
 - Closing one channel in a multi-channel tier may trigger partial clawback
 - We'll attempt to notify you before taking action when possible
@@ -104,7 +104,7 @@ Force-close broadcast
 | ISP outage (documented) | Case-by-case |
 | Natural disaster / emergency | Reach out — we're human |
 | Channels open for 30+ days | No clawback — fully vested |
-| You close channels after 30 days | No clawback |
+| You close channels after 90 days | No clawback |
 
 ---
 
@@ -114,7 +114,7 @@ Force-close broadcast
 2. **Set up Docker restart policies** — `restart: unless-stopped` is already set in our docker-compose.yml
 3. **Monitor your node** — run `bash scripts/check-uptime.sh` regularly or add to cron
 4. **Auto-unlock your wallet** — configure a wallet password file so LND unlocks after restart
-5. **Don't close channels** in the first 30 days
+5. **Don't close channels** in the first 90 days
 
 ---
 
@@ -146,8 +146,8 @@ If you know you'll have an outage, please reach out proactively. We'd rather wor
 
 | Rule | Threshold | Consequence |
 |------|-----------|-------------|
-| Uptime | < 95% over 30 days | Force-close inbound channels |
-| Channel close (within 30d) | Required channels closed | Partial/full inbound clawback |
+| Uptime | < 95% over 90 days | Force-close inbound channels |
+| Channel close (within 90d) | Required channels closed | Partial/full inbound clawback |
 | After vesting (30+ days) | N/A | No clawback — keep your liquidity |
 | Your committed sats | — | Never at risk — always yours |
 | CLTV timelock (if force-closed) | ~144 blocks | ~24 hour delay, then auto-swept |

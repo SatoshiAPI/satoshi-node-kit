@@ -16,10 +16,10 @@ The more you commit, the higher your bonus percentage.
 
 | Tier | Committed Sats | Inbound Bonus | Min Channels | Uptime Req | Vesting |
 |------|---------------|---------------|--------------|------------|---------|
-| 🌱 **Seed** | 500k – 999k | +10% inbound | 2 channels | 95% / 30d | 30 days |
-| 🏗️ **Builder** | 1M – 4.99M | +15% inbound | 3 channels | 95% / 30d | 30 days |
-| ⚓ **Anchor** | 5M – 9.99M | +20% inbound | 5 channels | 95% / 30d | 30 days |
-| 🏛️ **Founding** | 10M+ | +25% inbound | 6 channels | 95% / 30d | 30 days |
+| 🌱 **Seed** | 500k – 999k | +10% inbound | 2 channels | 95% / 90d | 90 days |
+| 🏗️ **Builder** | 1M – 4.99M | +15% inbound | 3 channels | 95% / 90d | 90 days |
+| ⚓ **Anchor** | 5M – 9.99M | +20% inbound | 5 channels | 95% / 90d | 90 days |
+| 🏛️ **Founding** | 10M+ | +25% inbound | 6 channels | 95% / 90d | 90 days |
 
 ---
 
@@ -35,8 +35,8 @@ The more you commit, the higher your bonus percentage.
 | Maximum commitment | 999,999 sats |
 | Inbound bonus | **+10%** |
 | Minimum channels | 2 |
-| Uptime requirement | 95% over 30 days |
-| Vesting period | 30 days |
+| Uptime requirement | 95% over 90 days |
+| Vesting period | 90 days |
 
 **Example:**
 - You open **2 channels × 250,000 sats** = 500,000 sats committed
@@ -55,8 +55,8 @@ The more you commit, the higher your bonus percentage.
 | Maximum commitment | 4,999,999 sats |
 | Inbound bonus | **+15%** |
 | Minimum channels | 3 |
-| Uptime requirement | 95% over 30 days |
-| Vesting period | 30 days |
+| Uptime requirement | 95% over 90 days |
+| Vesting period | 90 days |
 
 **Example:**
 - You open **3 channels × 500,000 sats** = 1,500,000 sats committed
@@ -75,8 +75,8 @@ The more you commit, the higher your bonus percentage.
 | Maximum commitment | 9,999,999 sats |
 | Inbound bonus | **+20%** |
 | Minimum channels | 5 |
-| Uptime requirement | 95% over 30 days |
-| Vesting period | 30 days |
+| Uptime requirement | 95% over 90 days |
+| Vesting period | 90 days |
 
 **Example:**
 - You open **5 channels × 1,200,000 sats** = 6,000,000 sats committed
@@ -95,8 +95,8 @@ The more you commit, the higher your bonus percentage.
 | Maximum commitment | Unlimited |
 | Inbound bonus | **+25%** |
 | Minimum channels | 6 |
-| Uptime requirement | 95% over 30 days |
-| Vesting period | 30 days |
+| Uptime requirement | 95% over 90 days |
+| Vesting period | 90 days |
 
 **Example:**
 - You open **6 channels × 2,000,000 sats** = 12,000,000 sats committed
@@ -175,7 +175,7 @@ console.log(`Bonus: ${elig.bonusSats.toLocaleString()} sats (${elig.bonusPct}%)`
 
 ## Important Notes
 
-- **Vesting:** Bonuses vest over 30 days. See [clawback-policy.md](clawback-policy.md).
-- **Uptime:** 95% uptime over 30 days is required. ~1 day of downtime is the max.
-- **Channel lifetime:** Do not close channels during the first 30 days.
+- **Vesting:** Bonuses vest over 90 days. See [clawback-policy.md](clawback-policy.md).
+- **Uptime:** 95% uptime over 90 days is required. ~3 days of downtime allowed per 90 days.
+- **Channel lifetime:** Do not close channels during the first 90 days.
 - **Force-close:** If SatoshiAPI force-closes inbound channels due to policy violation, funds return to your wallet after ~144 block CLTV timeout (~24 hours).

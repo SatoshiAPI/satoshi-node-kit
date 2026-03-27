@@ -11,7 +11,7 @@ Before you start, make sure you have:
 1. **A computer or VPS** running Linux or macOS
 2. **Docker + Docker Compose** installed ([get Docker](https://docs.docker.com/get-docker/))
 3. **Bitcoin (sats)** — minimum 500,000 sats (~$500 USD at current prices) to open channels
-4. **A reliable internet connection** (95%+ uptime required over 30 days)
+4. **A reliable internet connection** (95%+ uptime required over 90 days)
 
 **Time required:** ~30–60 minutes to set up. Channel confirmations take ~30 minutes.
 
@@ -190,7 +190,7 @@ docker exec -it lnd lncli channelbalance
 
 ## Keeping Your Node Running
 
-Your node must stay online 95%+ of the time over 30 days to keep your bonus.
+Your node must stay online 95%+ of the time over 90 days to keep your bonus.
 
 **If you restart your machine:**
 ```bash
@@ -275,7 +275,7 @@ After channels are open and confirmed:
 1. **SatoshiAPI reviews your registration** (within 24 hours of endpoint launch)
 2. **Inbound channels are opened** — your node receives liquidity from the hub
 3. **Your node earns routing fees** for payments that flow through it
-4. **After 30 days** with 95%+ uptime, your bonus is fully vested
+4. **After 90 days** with 95%+ uptime, your bonus is fully vested
 
 See [bonus-tiers.md](bonus-tiers.md) for full details on what you receive.
 See [clawback-policy.md](clawback-policy.md) for what happens if uptime drops.

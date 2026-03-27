@@ -124,7 +124,7 @@ echo    "  Channels to open:  $NUM_CHANNELS"
 echo    "  Per-channel size:  $(numfmt --grouping "$PER_CHANNEL_SATS") sats"
 echo -e "  Inbound bonus:     ${GREEN}+$(numfmt --grouping "$BONUS_SATS") sats (${TIER_BONUS}%)${NC}"
 echo    "  Target pubkey:     ${HUB_PUBKEY:0:20}..."
-echo    "  Uptime required:   95% over 30 days"
+echo    "  Uptime required:   95% over 90 days"
 if $DRY_RUN; then
   echo -e "  ${YELLOW}Mode:              DRY RUN (no channels will be opened)${NC}"
 fi
