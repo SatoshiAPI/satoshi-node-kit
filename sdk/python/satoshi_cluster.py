@@ -308,7 +308,7 @@ class SatoshiCluster:
         Args:
             committed_sats:  Total sats committed in channels
             channels_opened: Number of channels open to the hub
-            uptime_pct:      Uptime percentage over the last 30 days (default: 100%)
+            uptime_pct:      Uptime percentage over the last 90 days (default: 100%)
 
         Returns:
             BonusEligibility with eligibility status, tier, and bonus details
