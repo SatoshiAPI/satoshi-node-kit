@@ -1,15 +1,13 @@
 {
-  "_comment": "SatoshiAPI Cluster Hub Peers — used by peer-connect.sh and the SDK",
+  "_comment": "SatoshiAPI Cluster Hub Peers \u2014 used by peer-connect.sh and the SDK",
   "_version": "1.0.0",
   "_updated": "2026-03-27",
-
   "cluster": {
     "name": "SatoshiAPI Agent Network",
     "api": "https://api.satoshiapi.io",
     "mcp": "https://api.satoshiapi.io/mcp",
     "register_endpoint": "https://api.satoshiapi.io/cluster/register"
   },
-
   "hubs": [
     {
       "name": "SatoshiAPI Primary Hub",
@@ -18,10 +16,9 @@
       "onion": "34ok5fboyoxymwrb3mpynhhfgqkna3addrzmdkdzhibrkkdjokrrmpyd.onion:9735",
       "min_channel_size_sats": 100000,
       "preferred": true,
-      "notes": "Primary hub — always connect here first"
+      "notes": "Primary hub \u2014 always connect here first"
     }
   ],
-
   "tiers": {
     "seed": {
       "min_sats": 500000,
