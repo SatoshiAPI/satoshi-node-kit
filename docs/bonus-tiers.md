@@ -179,3 +179,24 @@ console.log(`Bonus: ${elig.bonusSats.toLocaleString()} sats (${elig.bonusPct}%)`
 - **Uptime:** 95% uptime over 90 days is required. ~3 days of downtime allowed per 90 days.
 - **Channel lifetime:** Do not close channels during the first 90 days.
 - **Force-close:** If SatoshiAPI force-closes inbound channels due to policy violation, funds return to your wallet after ~144 block CLTV timeout (~24 hours).
+
+---
+
+## Deployment Gate Policy
+
+| Tier | Deployment Gate | Aggregate Cap | Notes |
+|------|----------------|---------------|-------|
+| 🌱 Seed | T1/T2 — open now | None | No additional conditions |
+| 🏗️ Builder | T1/T2 — open now | None | No additional conditions |
+| ⚓ Anchor | T2 — open now | 5M sats aggregate until T3 confirmed | ~3–5 nodes max until T3 |
+| 🏛️ Founding | **T3-gated** | N/A | Manual node vetting required + T3 trigger |
+
+**Founding tier requirements (10M+ sats committed):**
+Before we open inbound channels for any Founding tier node, we manually review:
+- Public routing history (Amboss or 1ML)
+- Channel count and peer quality
+- Uptime track record
+
+No Founding tier is auto-approved. Expect 24–48h review.
+
+*Gate policy approved by Risk Manager 2026-03-27. Subject to revision as network matures.*
