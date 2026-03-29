@@ -383,7 +383,13 @@ class SatoshiCluster:
           2. Pay the invoice via LND
           3. Retry with Authorization: L402 <macaroon>:<preimage>
         """
-        cache_key = url
+        # Include query params in cache key so different requests (e.g. BTC/USD vs ETH/USD)
+        # don't share L402 tokens — tokens may have caveats bound to specific resources.
+        if params:
+            from urllib.parse import urlencode
+            cache_key = f"{url}?{urlencode(sorted(params.items()))}"
+        else:
+            cache_key = url
         headers: dict[str, str] = {"Accept": "application/json"}
 
         # Attach cached token if available
@@ -492,9 +498,18 @@ class SatoshiCluster:
         payload = {"payment_request": payment_request}
 
         try:
+            # SECURITY: Never silently disable TLS verification.
+            # A missing cert means misconfiguration, not "connect insecurely."
+            if not os.path.exists(self.tls_cert_path):
+                raise FileNotFoundError(
+                    f"LND TLS cert not found at {self.tls_cert_path}. "
+                    "Cannot connect securely. Check tls_cert_path or run "
+                    "'docker cp lnd:/root/.lnd/tls.cert ~/.lnd/tls.cert' to copy it."
+                )
+
             with httpx.Client(
                 timeout=60.0,
-                verify=self.tls_cert_path if os.path.exists(self.tls_cert_path) else False,
+                verify=self.tls_cert_path,
             ) as client:
                 resp = client.post(url, json=payload, headers=headers)
                 resp.raise_for_status()

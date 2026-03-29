@@ -142,14 +142,25 @@ echo ""
 echo "  To UNLOCK an existing wallet:"
 echo "    docker exec -it lnd lncli unlock"
 echo ""
+warn "⚠️  Wallet creation requires an interactive terminal (TTY)."
+warn "   It will NOT work when piped from 'curl | bash'."
+warn "   If running over SSH, use: ssh -t user@host \"docker exec -it lnd lncli create\""
+echo ""
 
-read -rp "Would you like to create/unlock your wallet now? [y/N] " answer
-if [[ "${answer,,}" == "y" ]]; then
-  echo ""
-  info "Launching wallet creation. Follow the prompts carefully and BACKUP YOUR SEED."
-  docker exec -it "$LND_CONTAINER" lncli create || warn "Wallet creation exited — run manually: docker exec -it lnd lncli create"
+# Check if we have a TTY — if not, skip the interactive wallet step
+if [[ -t 0 ]]; then
+  read -rp "Would you like to create/unlock your wallet now? [y/N] " answer
+  if [[ "${answer,,}" == "y" ]]; then
+    echo ""
+    info "Launching wallet creation. Follow the prompts carefully and BACKUP YOUR SEED."
+    docker exec -it "$LND_CONTAINER" lncli create || warn "Wallet creation exited — run manually: docker exec -it lnd lncli create"
+  else
+    warn "Skipping wallet setup. Run manually: docker exec -it lnd lncli create"
+  fi
 else
-  warn "Skipping wallet setup. Run manually: docker exec -it lnd lncli create"
+  warn "No interactive terminal detected (running via pipe or non-TTY SSH)."
+  warn "Run wallet creation manually after this script finishes:"
+  warn "  docker exec -it lnd lncli create"
 fi
 
 # ── Step 6: Get funding address ──────────────────────────────────────────────

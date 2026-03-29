@@ -8,10 +8,13 @@
 
 Before you start, make sure you have:
 
-1. **A computer or VPS** running Linux or macOS
+1. **A computer or VPS** running Linux, macOS, or Windows 10/11 (via WSL2)
 2. **Docker + Docker Compose** installed ([get Docker](https://docs.docker.com/get-docker/))
 3. **Bitcoin (sats)** — minimum 500,000 sats (~$500 USD at current prices) to open channels
 4. **A reliable internet connection** (95%+ uptime required over 90 days)
+5. **Open ports** or Tor-only mode — see [firewall-ports.md](firewall-ports.md)
+
+> **Windows users:** Follow [windows-setup.md](windows-setup.md) for Steps 1–2, then return here at Step 3.
 
 **Time required:** ~30–60 minutes to set up. Channel confirmations take ~30 minutes.
 
@@ -74,6 +77,8 @@ When prompted during `setup.sh`, or manually:
 ```bash
 docker exec -it lnd lncli create
 ```
+
+> ⚠️ **This requires an interactive terminal (TTY).** It will NOT work when piped from `curl | bash` or over SSH without the `-t` flag. If running over SSH: `ssh -t user@host "docker exec -it lnd lncli create"`
 
 You'll be asked to:
 1. Set a wallet password (remember this — you'll need it to unlock after restart)
@@ -195,13 +200,30 @@ Your node must stay online 95%+ of the time over 90 days to keep your bonus.
 **If you restart your machine:**
 ```bash
 cd satoshi-node-kit
-docker-compose up -d tor lnd
+docker compose up -d tor lnd
 docker exec -it lnd lncli unlock  # Enter your wallet password
 ```
 
-**Optional: Set up auto-restart**
+**Optional: Set up auto-unlock**
 
-The `restart: unless-stopped` in docker-compose.yml means Docker will auto-restart containers after a system reboot, but **you still need to unlock the wallet**. Consider using a wallet unlock script with a secured password file.
+Docker's `restart: unless-stopped` policy auto-restarts containers after a reboot, but **LND's wallet re-locks on every restart**. Without auto-unlock, your node is offline until you manually run `lncli unlock`.
+
+To enable auto-unlock:
+
+```bash
+# Store your wallet password inside the LND container volume
+docker exec lnd sh -c 'echo "YOUR_WALLET_PASSWORD" > /root/.lnd/wallet_password'
+docker exec lnd chmod 600 /root/.lnd/wallet_password
+```
+
+Then edit `lnd/lnd.conf` and uncomment:
+```ini
+wallet-unlock-password-file=/root/.lnd/wallet_password
+```
+
+Restart LND: `docker compose restart lnd`
+
+> ⚠️ The password file lives in the Docker volume. Anyone with Docker access on the host can read it. For high-security setups, use manual unlock.
 
 ---
 
@@ -257,13 +279,13 @@ docker exec -it lnd lncli listpeers
 
 # Container logs
 docker logs lnd
-docker logs tor
+docker logs satoshi-tor
 
 # Stop everything
-docker-compose down
+docker compose down
 
 # Start everything
-docker-compose up -d tor lnd
+docker compose up -d tor lnd
 ```
 
 ---

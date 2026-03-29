@@ -1,30 +1,37 @@
-version: "3.8"
-
 # SatoshiAPI Cluster Node Kit — Docker Compose
 # Runs LND (mainnet) + Tor. Optionally includes bitcoind for a full node.
 #
 # Usage:
-#   Full node (bitcoin + lnd + tor):  docker-compose --profile full up -d
-#   Light (lnd + tor only, use Neutrino): docker-compose up -d
+#   Light (lnd + tor only, Neutrino):     docker compose up -d
+#   Full node (bitcoin + lnd + tor):      docker compose --profile full up -d
 #
 # Ports exposed:
 #   9735  — LND peer-to-peer (Lightning)
-#   10009 — LND gRPC (for lncli / SDK)
-#   8080  — LND REST API
+#   10009 — LND gRPC (localhost only)
+#   8080  — LND REST API (localhost only)
+#
+# NOTE: `version` key is omitted intentionally — it is deprecated in
+#       Docker Compose v2 and causes warnings on every command.
 
 services:
 
   # ─────────────────────────────────────────────
-  # Tor hidden service for LND
+  # Tor SOCKS proxy for LND privacy
   # ─────────────────────────────────────────────
+  #
+  # Image: peterdavehello/tor-socks-proxy provides a Tor SOCKS5 proxy
+  # on port 9150 (container-internal). LND connects to this for
+  # outbound Tor traffic and hidden service creation.
+  #
+  # ⚠️ NOTE: This image exposes Tor SOCKS on port 9150 (not the standard 9050).
+  # The lnd.conf tor.socks= setting must match: tor:9150
   tor:
-    image: lnzap/tor:latest
-    container_name: tor
+    image: peterdavehello/tor-socks-proxy:latest
+    container_name: satoshi-tor
     restart: unless-stopped
     volumes:
       - tor_data:/var/lib/tor
-    environment:
-      - TOR_LOG=notice
+      - ./tor/torrc:/etc/tor/torrc:ro
     networks:
       - lnnet
 
@@ -47,7 +54,6 @@ services:
     volumes:
       - lnd_data:/root/.lnd
       - ./lnd/lnd.conf:/root/.lnd/lnd.conf:ro
-      - tor_data:/var/lib/tor:ro
     environment:
       - HOME=/root
     command: lnd --configfile=/root/.lnd/lnd.conf
@@ -62,16 +68,18 @@ services:
 
   # ─────────────────────────────────────────────
   # Bitcoin Core — optional full node backend
-  # Enable with: docker-compose --profile full up -d
+  # Enable with: docker compose --profile full up -d
+  #
+  # Image: lncm/bitcoind is a well-maintained community image.
   # ─────────────────────────────────────────────
   bitcoind:
-    image: lnzap/bitcoind:latest
+    image: lncm/bitcoind:v27.1
     container_name: bitcoind
     profiles:
       - full
     restart: unless-stopped
     volumes:
-      - bitcoind_data:/bitcoin/.bitcoin
+      - bitcoind_data:/root/.bitcoin
     command: >
       bitcoind
       -server=1
@@ -82,12 +90,11 @@ services:
       -rpcallowip=172.16.0.0/12
       -zmqpubrawblock=tcp://0.0.0.0:28332
       -zmqpubrawtx=tcp://0.0.0.0:28333
-      -rpcbind=127.0.0.1
+      -rpcbind=0.0.0.0
     ports:
-      # ⚠️ SECURITY: RPC port 8332 is NOT exposed to the host.
+      # ⚠️ SECURITY: RPC port bound to localhost only.
       # LND connects to bitcoind via Docker internal network (service name: bitcoind).
-      # Exposing 8332 to the host with default credentials is a critical vulnerability.
-      - "127.0.0.1:8332:8332"   # RPC — localhost only (LND uses internal Docker network)
+      - "127.0.0.1:8332:8332"   # RPC — localhost only
       - "8333:8333"   # P2P — must be public for full node connectivity
       - "28332:28332" # ZMQ blocks
       - "28333:28333" # ZMQ txs

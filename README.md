@@ -23,10 +23,12 @@ curl -sSL https://raw.githubusercontent.com/SatoshiAPI/satoshi-node-kit/main/scr
 The SatoshiAPI Cluster Node Kit bootstraps your LND node and connects it to the **SatoshiAPI Agent Network** — a Lightning cluster powering agent-to-agent commerce, L402 micropayments, and AI-native services.
 
 ### What You Bring
-- ✅ A machine to run LND (Linux/macOS/VPS)
+- ✅ A machine to run LND (Linux/macOS/Windows via WSL2/VPS)
 - ✅ Docker + Docker Compose
 - ✅ Sats to fund channels (500k minimum)
 - ✅ Reliable uptime (95%+ over 90 days)
+
+> **Windows users:** See [docs/windows-setup.md](docs/windows-setup.md) for WSL2 + Docker setup guide.
 
 ### What We Provide
 - ✅ Inbound liquidity bonus (10%–25% of your commitment)
@@ -83,6 +85,8 @@ satoshi-node-kit/
 │   └── js/                 ← JavaScript SDK (ESM)
 └── docs/
     ├── quickstart.md       ← Step-by-step guide for non-experts
+    ├── windows-setup.md    ← Windows 10/11 WSL2 + Docker guide
+    ├── firewall-ports.md   ← Required ports, CGNAT solutions
     ├── bonus-tiers.md      ← Full tier details with examples
     └── clawback-policy.md  ← 90-day vesting / clawback explained
 ```
@@ -99,10 +103,13 @@ cd satoshi-node-kit
 
 ### 2. Start LND
 ```bash
-docker-compose up -d lnd tor
+docker compose up -d lnd tor
 ```
 
 ### 3. Create Wallet
+
+> ⚠️ **Interactive terminal required.** `lncli create` needs a TTY for the seed display and password prompt. This does NOT work when piped from `curl | bash` or over SSH without the `-t` flag. Use: `ssh -t user@host "docker exec -it lnd lncli create"`
+
 ```bash
 docker exec -it lnd lncli create
 ```
@@ -131,6 +138,8 @@ bash scripts/claim-bonus.sh
 - **API:** https://api.satoshiapi.io
 - **MCP Endpoint:** https://api.satoshiapi.io/mcp
 - **Docs:** [docs/quickstart.md](docs/quickstart.md)
+- **Windows Setup:** [docs/windows-setup.md](docs/windows-setup.md)
+- **Firewall & Ports:** [docs/firewall-ports.md](docs/firewall-ports.md)
 - **Bonus Tiers:** [docs/bonus-tiers.md](docs/bonus-tiers.md)
 - **Clawback Policy:** [docs/clawback-policy.md](docs/clawback-policy.md)
 

@@ -1,0 +1,19 @@
+# Tor configuration for SatoshiAPI Node Kit
+# Used by peterdavehello/tor-socks-proxy with custom config mount
+
+# SOCKS proxy for LND outbound connections
+SocksPort 0.0.0.0:9150
+
+# Control port for LND to create hidden services
+# HashedControlPassword is empty string — access is restricted by Docker network
+ControlPort 0.0.0.0:9051
+CookieAuthentication 0
+
+# Logging
+Log notice stdout
+
+# Data directory
+DataDirectory /var/lib/tor
+
+# Performance
+HardwareAccel 1
